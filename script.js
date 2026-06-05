@@ -1,169 +1,154 @@
-document.getElementById('phoneBtn').addEventListener('click', function () {
-    const phoneNumber = this.getAttribute('data-phone');
-    navigator.clipboard.writeText(phoneNumber).then(() => {
-        const toast = document.getElementById('copyToast');
-        toast.classList.add('show');
-        setTimeout(() => {
-            toast.classList.remove('show');
-        }, 2000);
-    }).catch(err => {
-        console.error('Не удалось скопировать: ', err);
+// ========================================
+// КОПИРОВАНИЕ НОМЕРОВ ТЕЛЕФОНА
+// ========================================
+function setupClipboard(buttonId, toastId, errorMsg) {
+    const btn = document.getElementById(buttonId);
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+        const phoneNumber = this.getAttribute('data-phone');
+        navigator.clipboard.writeText(phoneNumber).then(() => {
+            const toast = document.getElementById(toastId);
+            if (toast) {
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 2000);
+            }
+        }).catch(err => console.error(errorMsg, err));
     });
+}
+setupClipboard('phoneBtn', 'copyToast', 'Не удалось скопировать: ');
+setupClipboard('contactPhoneBtn', 'contactCopyToast', 'Не удалось скопировать номер: ');
+
+// ========================================
+// БЕСКОНЕЧНЫЙ СЛАЙДЕР С ПЛАВНЫМ СВАЙПОМ
+// ========================================
+const tape = document.getElementById('sliderTape');
+const originalSlides = document.querySelectorAll('.second-section');
+const totalSlides = originalSlides.length;
+
+// Создаем клоны для бесконечного цикла
+const firstClone = originalSlides[0].cloneNode(true);
+const lastClone = originalSlides[totalSlides - 1].cloneNode(true);
+
+// Добавляем клоны в DOM
+tape.appendChild(firstClone);
+tape.insertBefore(lastClone, originalSlides[0]);
+
+// Пересобираем массив слайдов с учетом клонов
+const allSlides = tape.querySelectorAll('.second-section');
+
+let currentIndex = 1; // Стартуем с 1, так как индекс 0 — это клон последнего слайда
+let isTransitioning = false;
+
+function getSlideWidth() {
+    return originalSlides[0].offsetWidth;
+}
+
+// Установка начальной позиции без анимации
+function setInitialPosition() {
+    tape.style.transition = 'none';
+    tape.style.transform = `translateX(${-currentIndex * getSlideWidth()}px)`;
+}
+setInitialPosition();
+
+// Основная функция движения
+function moveSlider(index, animated = true) {
+    if (isTransitioning && animated) return;
+    
+    currentIndex = index;
+    const slideWidth = getSlideWidth();
+    
+    if (animated) {
+        tape.style.transition = 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)'; // Плавная инерционная анимация
+        isTransitioning = true;
+    } else {
+        tape.style.transition = 'none';
+    }
+    
+    tape.style.transform = `translateX(${-currentIndex * slideWidth}px)`;
+}
+
+// Корректировка позиции на границах клонов
+tape.addEventListener('transitionend', () => {
+    isTransitioning = false;
+    
+    if (currentIndex === 0) {
+        moveSlider(totalSlides, false); // Мгновенный перенос в конец
+    } else if (currentIndex === totalSlides + 1) {
+        moveSlider(1, false); // Мгновенный перенос в начало
+    }
 });
 
-// Находим ленту со слайдами
-const tape = document.getElementById('sliderTape');
-// Считаем общее количество карточек в слайдере
-const slides = document.querySelectorAll('.second-section');
-const totalSlides = slides.length;
-
-let currentIndex = 0; // Номер текущего слайда
-let isTransitioning = false; // Флаг для блокировки быстрых кликов
-
-// Функция получения актуальной ширины слайда
-function getSlideWidth() {
-    return slides[0].offsetWidth;
-}
-
-// Функция, которая двигает ленту на нужный слайд
-function moveSlider(index, instant = false) {
-    if (isTransitioning && !instant) return;
-    
-    const slideWidth = getSlideWidth();
-    const offset = -index * slideWidth;
-    
-    if (instant) {
-        // Мгновенный переход без анимации
-        tape.style.transition = 'none';
-        tape.style.transform = `translateX(${offset}px)`;
-        // Возвращаем анимацию после применения позиции
-        setTimeout(() => {
-            tape.style.transition = 'transform 0.5s ease-in-out';
-        }, 50);
-    } else {
-        tape.style.transition = 'transform 0.5s ease-in-out';
-        tape.style.transform = `translateX(${offset}px)`;
-        isTransitioning = true;
-        
-        // Разблокируем после завершения анимации
-        setTimeout(() => {
-            isTransitioning = false;
-        }, 500);
-    }
-}
-
-// Находим все кнопки "Вперед" и вешаем на них клик
+// Кнопки управления
 document.querySelectorAll('.slider-next').forEach(button => {
     button.addEventListener('click', () => {
-        if (isTransitioning) return; // Блокируем быстрые клики
-        
-        if (currentIndex < totalSlides - 1) {
-            currentIndex++;
-        } else {
-            currentIndex = 0; // Возврат в начало
-        }
-        moveSlider(currentIndex);
+        if (isTransitioning) return;
+        moveSlider(currentIndex + 1);
     });
 });
 
-// Находим все кнопки "Назад" и вешаем на них клик
 document.querySelectorAll('.slider-prev').forEach(button => {
     button.addEventListener('click', () => {
-        if (isTransitioning) return; // Блокируем быстрые клики
-        
-        if (currentIndex > 0) {
-            currentIndex--;
-        } else {
-            currentIndex = totalSlides - 1; // Возврат в конец
-        }
-        moveSlider(currentIndex);
+        if (isTransitioning) return;
+        moveSlider(currentIndex - 1);
     });
 });
 
-// Пересчитываем позицию слайдера при изменении размера окна
 window.addEventListener('resize', () => {
-    moveSlider(currentIndex, true); // Мгновенный переход при ресайзе
-});
-
-// Копирование номера телефона из блока контактов
-document.getElementById('contactPhoneBtn').addEventListener('click', function() {
-    const phoneNumber = this.getAttribute('data-phone');
-    navigator.clipboard.writeText(phoneNumber).then(() => {
-        const toast = document.getElementById('contactCopyToast');
-        toast.classList.add('show');
-        setTimeout(() => {
-            toast.classList.remove('show');
-        }, 2000);
-    }).catch(err => {
-        console.error('Не удалось скопировать номер: ', err);
-    });
+    moveSlider(currentIndex, false);
 });
 
 // ========================================
-// СВАЙПЫ ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ
+// УЛУЧШЕННЫЕ СВАЙПЫ (ПЛАВНЫЕ И СТАБИЛЬНЫЕ)
 // ========================================
-
 let touchStartX = 0;
-let touchEndX = 0;
+let currentTranslate = 0;
 let isDragging = false;
-let dragOffset = 0;
-const sliderWindow = document.querySelector('.slider-window');
 
-// Начало касания
 tape.addEventListener('touchstart', function(e) {
-    touchStartX = e.touches[0].clientX;
+    if (isTransitioning) return;
     isDragging = true;
-    dragOffset = 0;
+    touchStartX = e.touches[0].clientX;
+    
+    // Фиксируем текущую точку трансформации
+    const slideWidth = getSlideWidth();
+    currentTranslate = -currentIndex * slideWidth;
+    
     tape.style.transition = 'none';
 }, { passive: true });
 
-// Движение пальца
 tape.addEventListener('touchmove', function(e) {
     if (!isDragging) return;
     
-    touchEndX = e.touches[0].clientX;
-    dragOffset = touchEndX - touchStartX;
+    const touchCurrentX = e.touches[0].clientX;
+    const dragOffset = touchCurrentX - touchStartX;
     
-    const slideWidth = getSlideWidth();
-    const currentOffset = -currentIndex * slideWidth + dragOffset;
-    
-    tape.style.transform = `translateX(${currentOffset}px)`;
+    // Плавный сдвиг пальцем в реальном времени
+    tape.style.transform = `translateX(${currentTranslate + dragOffset}px)`;
 }, { passive: true });
 
-// Конец касания
 tape.addEventListener('touchend', function(e) {
     if (!isDragging) return;
     isDragging = false;
     
-    tape.style.transition = 'transform 0.5s ease-in-out';
-    
+    const touchEndX = e.changedTouches[0].clientX;
+    const dragOffset = touchEndX - touchStartX;
     const slideWidth = getSlideWidth();
-    const threshold = slideWidth * 0.2;
-    
-    if (dragOffset > threshold) {
-        // Свайп вправо - предыдущий слайд
-        if (currentIndex > 0) {
-            currentIndex--;
-        } else {
-            currentIndex = totalSlides - 1; // Циклический переход в конец
-        }
-    } else if (dragOffset < -threshold) {
-        // Свайп влево - следующий слайд
-        if (currentIndex < totalSlides - 1) {
-            currentIndex++;
-        } else {
-            currentIndex = 0; // Циклический переход в начало
-        }
+    const threshold = slideWidth * 0.15; // Порог перелистывания (15% от ширины)
+
+    if (dragOffset < -threshold) {
+        // Свайп влево -> следующий слайд
+        moveSlider(currentIndex + 1);
+    } else if (dragOffset > threshold) {
+        // Свайп вправо -> предыдущий слайд
+        moveSlider(currentIndex - 1);
+    } else {
+        // Возврат на текущий слайд, если свайп был слишком слабым
+        moveSlider(currentIndex);
     }
-    
-    moveSlider(currentIndex);
-    dragOffset = 0;
 }, { passive: true });
 
-// Отмена свайпа
-tape.addEventListener('touchcancel', function(e) {
+tape.addEventListener('touchcancel', function() {
+    if (!isDragging) return;
     isDragging = false;
-    tape.style.transition = 'transform 0.5s ease-in-out';
     moveSlider(currentIndex);
-    dragOffset = 0;
 }, { passive: true });
