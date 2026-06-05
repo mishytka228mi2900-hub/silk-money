@@ -962,3 +962,29 @@ body::before {
         background-size: 50% !important;
     } */
 }
+
+/* Окно слайдера, скрывающее вылезающие слайды */
+.slider-window {
+    overflow: hidden;
+    width: 100%; /* Или ваша фиксированная ширина */
+}
+
+/* Лента слайдов */
+#sliderTape {
+    display: flex;
+    width: max-content; /* Запрещает контейнеру сжимать слайды */
+    will-change: transform; /* Подготавливает GPU к плавной анимации */
+}
+
+/* Сам слайд */
+.second-section {
+    flex-shrink: 0; /* Запрещает слайдам сжиматься */
+    width: 100vw; /* Или фиксированная ширина в px/%, если слайд меньше экрана */
+}
+
+/* Картинки внутри слайдов */
+.second-section img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
