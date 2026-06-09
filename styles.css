@@ -784,3 +784,74 @@ body::before {
         margin-right: 10px;
     }
 }
+
+/* ========================================
+ИСПРАВЛЕНИЕ УВЕДОМЛЕНИЯ О КОПИРОВАНИИ
+======================================== */
+
+/* Родительский контейнер — разрешаем выход за границы */
+.contact-item-wrapper {
+    position: relative;
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    overflow: visible; /* ВАЖНО: разрешаем уведомлению выходить за границы */
+}
+
+/* Уведомление — увеличиваем padding и z-index */
+.contact-toast {
+    position: absolute;
+    left: 102%;
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-50%) translateX(10px);
+    background-color: #2b7d86;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 500;
+    padding: 12px 24px; /* Увеличили padding */
+    border-radius: 10px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+    z-index: 1000; /* Высокий z-index чтобы быть поверх всего */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Добавили тень для лучшей видимости */
+    pointer-events: none; /* Чтобы уведомление не мешало кликам */
+}
+
+.contact-toast.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-50%) translateX(15px);
+}
+
+/* ========================================
+МОБИЛЬНАЯ ВЕРСИЯ — уведомление по центру снизу
+======================================== */
+@media (max-width: 768px) {
+    .contact-toast {
+        left: 50%;
+        top: auto;
+        bottom: -60px; /* Чуть дальше от номера */
+        transform: translateX(-50%);
+        font-size: 16px;
+        padding: 10px 20px;
+        white-space: nowrap;
+    }
+
+    .contact-toast.show {
+        transform: translateX(-50%) translateY(-5px);
+    }
+}
+
+/* ========================================
+МАЛЕНЬКИЕ МОБИЛЬНЫЕ — ещё меньше
+======================================== */
+@media (max-width: 480px) {
+    .contact-toast {
+        font-size: 14px;
+        padding: 8px 16px;
+        bottom: -50px;
+    }
+}
