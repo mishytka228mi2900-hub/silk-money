@@ -143,7 +143,7 @@ body::before {
 }
 
 /* ========================================
-СЛАЙДЕР (ИСПРАВЛЕНО И ОЧИЩЕНО)
+СЛАЙДЕР — ИСПРАВЛЕННАЯ ВЕРСИЯ
 ======================================== */
 .slider-window {
     position: relative;
@@ -156,41 +156,46 @@ body::before {
     background-color: #ffffff;
 }
 
-.slider-tape {
+.slider-tape,
+#sliderTape {
     display: flex;
     will-change: transform;
-    /* transition управляется через JS для плавности и мгновенных прыжков */
 }
 
 .second-section {
     flex-shrink: 0;
-    width: 380px; /* Строго фиксированная ширина, как у .slider-window */
+    width: 380px;
     height: 480px;
     background-color: #fdfdfd;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+    /* УБРАНО: justify-content: flex-end — больше не прижимаем к низу */
     position: relative;
     overflow: hidden;
     box-sizing: border-box;
 }
 
-/* Изображение внутри слайда */
+/* Картинка: занимает всё свободное пространство и центрируется */
 .second-section img.card-image {
+    flex: 1; /* Растягивается на всё доступное пространство над текстом */
     display: block;
-    width: 100%;
-    height: 390px; /* 480px общая высота - 90px высота блока с текстом */
-    object-fit: contain; /* Сохраняет пропорции, inline стили (max-width) будут работать поверх */
-    background-color: #fdfdfd;
-    padding: 20px;
+    margin: auto; /* Магия flexbox: центрирует по горизонтали И вертикали */
+    max-width: 90% !important; /* УВЕЛИЧЕНО: было 50-70%, стало 90% */
+    max-height: 380px; /* Ограничение, чтобы текст всегда оставался виден */
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    padding: 10px;
     box-sizing: border-box;
 }
 
+/* Текст: всегда прижат к низу */
 .card-info {
+    flex-shrink: 0; /* Не сжимается, всегда фиксированная высота */
     padding: 24px;
     background-color: #ffffff;
     border-top: 1px solid #eeeeee;
-    height: 90px; /* Фиксированная высота для стабильности */
+    min-height: 90px;
     box-sizing: border-box;
     display: flex;
     justify-content: space-between;
@@ -246,6 +251,39 @@ body::before {
 .slider-btn:hover {
     background-color: #2b7d86;
     color: #ffffff;
+}
+
+/* ========================================
+МОБИЛЬНАЯ ВЕРСИЯ СЛАЙДЕРА
+======================================== */
+@media (max-width: 768px) {
+    .slider-window {
+        width: 100%;
+        max-width: 340px;
+        margin: 0 auto;
+    }
+    .second-section {
+        width: 340px;
+        height: 420px;
+    }
+    .second-section img.card-image {
+        max-width: 92% !important; /* Ещё чуть крупнее на мобилке */
+        max-height: 320px;
+    }
+    .card-title { font-size: 18px; }
+    .card-subtitle { font-size: 14px; }
+    .slider-controls { bottom: 16px; right: 16px; }
+    .slider-btn { width: 32px; height: 32px; font-size: 14px; }
+}
+
+@media (max-width: 480px) {
+    .second-section img.card-image {
+        max-width: 95% !important; /* Максимально крупно на маленьких экранах */
+        max-height: 280px;
+    }
+    .card-info { padding: 16px; min-height: 80px; }
+    .card-title { font-size: 16px; }
+    .card-subtitle { font-size: 13px; }
 }
 
 /* ========================================
