@@ -855,3 +855,30 @@ body::before {
         bottom: -50px;
     }
 }
+
+
+/* Стили для изображений внутри слайдера */
+.second-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* Картинка сверху, текст снизу */
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.card-image {
+    display: block;
+    height: auto;
+    object-fit: contain; /* Сохраняет пропорции картинки, не обрезая её */
+    margin-bottom: 15px; /* Отступ до текста */
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+    .card-image {
+        max-width: 80% !important; /* На телефонах картинки чуть крупнее */
+    }
+}
