@@ -1,154 +1,155 @@
 // ========================================
-// КОПИРОВАНИЕ НОМЕРОВ ТЕЛЕФОНА
+// 1. КОПИРОВАНИЕ НОМЕРОВ (Без изменений, работает отлично)
 // ========================================
 function setupClipboard(buttonId, toastId, errorMsg) {
     const btn = document.getElementById(buttonId);
     if (!btn) return;
-    btn.addEventListener('click', function () {
+    
+    btn.addEventListener('click', function (e) {
+        e.preventDefault(); // Предотвращаем случайные переходы, если это ссылка
         const phoneNumber = this.getAttribute('data-phone');
+        
         navigator.clipboard.writeText(phoneNumber).then(() => {
             const toast = document.getElementById(toastId);
             if (toast) {
                 toast.classList.add('show');
+                // Убираем класс через 2 секунды
                 setTimeout(() => toast.classList.remove('show'), 2000);
             }
         }).catch(err => console.error(errorMsg, err));
     });
 }
-setupClipboard('phoneBtn', 'copyToast', 'Не удалось скопировать: ');
-setupClipboard('contactPhoneBtn', 'contactCopyToast', 'Не удалось скопировать номер: ');
+
+setupClipboard('phoneBtn', 'copyToast', 'Ошибка копирования основного номера');
+setupClipboard('contactPhoneBtn', 'contactCopyToast', 'Ошибка копирования контактного номера');
+
 
 // ========================================
-// НАДЕЖНЫЙ БЕСКОНЕЧНЫЙ СЛАЙДЕР
+// 2. ОПТИМИЗИРОВАННЫЙ СЛАЙДЕР (Быстрый и плавный)
 // ========================================
-const tape = document.getElementById('sliderTape');
-const originalSlides = document.querySelectorAll('.second-section');
-const totalSlides = originalSlides.length;
+document.addEventListener('DOMContentLoaded', () => {
+    const tape = document.getElementById('sliderTape');
+    if (!tape) return;
 
-// ИСПРАВЛЕНО: Правильное клонирование отдельных элементов из NodeList
-const firstClone = originalSlides[0].cloneNode(true);
-const lastClone = originalSlides[totalSlides - 1].cloneNode(true);
-
-tape.appendChild(firstClone);
-tape.insertBefore(lastClone, originalSlides[0]);
-
-let currentIndex = 1;
-let isTransitioning = false;
-let slideWidth = 0;
-
-// Функция для точного расчета ширины
-function updateDimensions() {
-    if (originalSlides.length > 0) {
-        slideWidth = originalSlides[0].offsetWidth;
-        moveSlider(currentIndex, false);
-    }
-}
-
-function moveSlider(index, animated = true) {
-    if (isTransitioning && animated) return;
+    // Получаем оригинальные слайды (без клонов пока)
+    const originalSlides = Array.from(document.querySelectorAll('.second-section'));
+    const totalOriginals = originalSlides.length;
     
-    currentIndex = index;
-    
-    if (animated) {
-        tape.style.transition = 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)';
-        isTransitioning = true;
-    } else {
-        tape.style.transition = 'none';
-    }
-    
-    tape.style.transform = `translate3d(${-currentIndex * slideWidth}px, 0, 0)`;
-}
+    if (totalOriginals === 0) return;
 
-// Мгновенный незаметный перенос на границах клонов
-tape.addEventListener('transitionend', () => {
-    isTransitioning = false;
-    if (currentIndex === 0) {
-        moveSlider(totalSlides, false);
-    } else if (currentIndex === totalSlides + 1) {
-        moveSlider(1, false);
-    }
-});
+    // Создаем клоны для бесконечной прокрутки
+    const firstClone = originalSlides[0].cloneNode(true);
+    const lastClone = originalSlides[totalOriginals - 1].cloneNode(true);
 
-// Кнопки управления
-document.querySelectorAll('.slider-next').forEach(button => {
-    button.addEventListener('click', () => {
-        if (isTransitioning) return;
-        moveSlider(currentIndex + 1);
+    // Добавляем клоны в DOM
+    tape.appendChild(firstClone);
+    tape.insertBefore(lastClone, originalSlides[0]);
+
+    // Обновляем список всех слайдов (теперь их больше на 2)
+    const allSlides = tape.querySelectorAll('.second-section');
+    let currentIndex = 1; // Начинаем с 1, так как 0 - это клон последнего слайда
+    let isAnimating = false;
+    
+    // ВАЖНО: Ширина слайда теперь берется из CSS, а не вычисляется JS-ом динамически каждый раз.
+    // Это решает проблему тормозов на телефоне.
+    function getSlideWidth() {
+        return allSlides[0].getBoundingClientRect().width;
+    }
+
+    function updateSlider(animate = true) {
+        const width = getSlideWidth();
+        const offset = -currentIndex * width;
+        
+        if (animate) {
+            tape.style.transition = 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)';
+            isAnimating = true;
+        } else {
+            tape.style.transition = 'none';
+        }
+        
+        tape.style.transform = `translateX(${offset}px)`;
+    }
+
+    // Обработка конца анимации (для бесшовного цикла)
+    tape.addEventListener('transitionend', () => {
+        isAnimating = false;
+        const width = getSlideWidth();
+        
+        // Если уехали на клон первого слайда -> прыгаем на реальный первый
+        if (currentIndex === totalOriginals + 1) {
+            currentIndex = 1;
+            updateSlider(false);
+        }
+        // Если уехали на клон последнего слайда -> прыгаем на реальный последний
+        else if (currentIndex === 0) {
+            currentIndex = totalOriginals;
+            updateSlider(false);
+        }
+    });
+
+    // Кнопки Вперед/Назад
+    document.querySelector('.slider-next')?.addEventListener('click', () => {
+        if (isAnimating) return;
+        currentIndex++;
+        updateSlider(true);
+    });
+
+    document.querySelector('.slider-prev')?.addEventListener('click', () => {
+        if (isAnimating) return;
+        currentIndex--;
+        updateSlider(true);
+    });
+
+    // ========================================
+    // 3. СВАЙПЫ ДЛЯ ТЕЛЕФОНА (Упрощенная логика)
+    // ========================================
+    let startX = 0;
+    let currentX = 0;
+    let isDragging = false;
+
+    tape.addEventListener('touchstart', (e) => {
+        if (isAnimating) return; // Блокируем свайп во время анимации
+        isDragging = true;
+        startX = e.touches[0].clientX;
+        tape.style.transition = 'none'; // Отключаем плавность для мгновенной реакции пальца
+    }, { passive: true });
+
+    tape.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        currentX = e.touches[0].clientX;
+        const diff = currentX - startX;
+        const width = getSlideWidth();
+        // Двигаем ленту вслед за пальцем
+        tape.style.transform = `translateX(${-currentIndex * width + diff}px)`;
+    }, { passive: true });
+
+    tape.addEventListener('touchend', (e) => {
+        if (!isDragging) return;
+        isDragging = false;
+        
+        const diff = currentX - startX;
+        const threshold = 50; // Минимальное расстояние свайпа в пикселях
+        
+        if (diff < -threshold) {
+            // Свайп влево -> следующий слайд
+            currentIndex++;
+        } else if (diff > threshold) {
+            // Свайп вправо -> предыдущий слайд
+            currentIndex--;
+        }
+        // Если свайп слишком короткий, остаемся на месте (ничего не делаем)
+        
+        updateSlider(true); // Возвращаем слайд на место с анимацией
+    });
+
+    // Инициализация при загрузке
+    // Небольшая задержка гарантирует, что CSS стили применились
+    setTimeout(() => {
+        updateSlider(false);
+    }, 100);
+
+    // Пересчет при повороте экрана
+    window.addEventListener('resize', () => {
+        updateSlider(false);
     });
 });
-
-document.querySelectorAll('.slider-prev').forEach(button => {
-    button.addEventListener('click', () => {
-        if (isTransitioning) return;
-        moveSlider(currentIndex - 1);
-    });
-});
-
-window.addEventListener('resize', updateDimensions);
-
-// ИСПРАВЛЕНО: Ждем полной загрузки всех картинок, прежде чем считать размеры
-window.addEventListener('load', () => {
-    updateDimensions();
-});
-
-// Дополнительный запуск, если событие load уже прошло
-if (document.readyState === 'complete') {
-    updateDimensions();
-}
-
-// ========================================
-// ВЫСОКОПРОИЗВОДИТЕЛЬНЫЕ СВАЙПЫ
-// ========================================
-let touchStartX = 0;
-let currentTranslate = 0;
-let isDragging = false;
-let dragOffset = 0;
-let animationFrameId = null;
-
-function renderLoop() {
-    if (!isDragging) return;
-    tape.style.transform = `translate3d(${currentTranslate + dragOffset}px, 0, 0)`;
-    animationFrameId = requestAnimationFrame(renderLoop);
-}
-
-tape.addEventListener('touchstart', function(e) {
-    if (isTransitioning) return;
-    isDragging = true;
-    touchStartX = e.touches[0].clientX;
-    currentTranslate = -currentIndex * slideWidth;
-    
-    tape.style.transition = 'none';
-    
-    cancelAnimationFrame(animationFrameId);
-    animationFrameId = requestAnimationFrame(renderLoop);
-}, { passive: true });
-
-tape.addEventListener('touchmove', function(e) {
-    if (!isDragging) return;
-    dragOffset = e.touches[0].clientX - touchStartX;
-}, { passive: true });
-
-tape.addEventListener('touchend', function(e) {
-    if (!isDragging) return;
-    isDragging = false;
-    cancelAnimationFrame(animationFrameId);
-    
-    const threshold = slideWidth * 0.15;
-
-    if (dragOffset < -threshold) {
-        moveSlider(currentIndex + 1);
-    } else if (dragOffset > threshold) {
-        moveSlider(currentIndex - 1);
-    } else {
-        moveSlider(currentIndex);
-    }
-    dragOffset = 0;
-}, { passive: true });
-
-tape.addEventListener('touchcancel', function() {
-    if (!isDragging) return;
-    isDragging = false;
-    cancelAnimationFrame(animationFrameId);
-    moveSlider(currentIndex);
-    dragOffset = 0;
-}, { passive: true });

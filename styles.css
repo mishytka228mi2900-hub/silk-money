@@ -882,3 +882,41 @@ body::before {
         max-width: 80% !important; /* На телефонах картинки чуть крупнее */
     }
 }
+
+
+/* Контейнер слайдера */
+.slider-window {
+    overflow: hidden; /* Скрываем всё, что вылезает за рамки */
+    width: 100%;
+    position: relative;
+}
+
+/* Лента со слайдами */
+.slider-tape {
+    display: flex; /* Выстраиваем слайды в ряд */
+    will-change: transform; /* Подсказка браузеру для оптимизации анимации */
+}
+
+/* Сам слайд */
+.second-section {
+    /* ВАЖНО: Фиксируем ширину слайда. 
+       100% означает, что один слайд занимает всю ширину окна просмотра.
+       Если хотите видеть часть следующего слайда, поставьте например 85% или 300px */
+    min-width: 100%; 
+    box-sizing: border-box;
+    flex-shrink: 0; /* Запрещаем сжатие слайдов */
+    
+    /* Центрирование контента внутри слайда */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Картинки внутри слайда */
+.card-image {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
