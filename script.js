@@ -1,19 +1,18 @@
 // ========================================
-// 1. КОПИРОВАНИЕ НОМЕРОВ (Без изменений, работает отлично)
+// 1. КОПИРОВАНИЕ НОМЕРОВ
 // ========================================
 function setupClipboard(buttonId, toastId, errorMsg) {
     const btn = document.getElementById(buttonId);
     if (!btn) return;
     
     btn.addEventListener('click', function (e) {
-        e.preventDefault(); // Предотвращаем случайные переходы, если это ссылка
+        e.preventDefault();
         const phoneNumber = this.getAttribute('data-phone');
         
         navigator.clipboard.writeText(phoneNumber).then(() => {
             const toast = document.getElementById(toastId);
             if (toast) {
                 toast.classList.add('show');
-                // Убираем класс через 2 секунды
                 setTimeout(() => toast.classList.remove('show'), 2000);
             }
         }).catch(err => console.error(errorMsg, err));
@@ -23,18 +22,16 @@ function setupClipboard(buttonId, toastId, errorMsg) {
 setupClipboard('phoneBtn', 'copyToast', 'Ошибка копирования основного номера');
 setupClipboard('contactPhoneBtn', 'contactCopyToast', 'Ошибка копирования контактного номера');
 
-
 // ========================================
-// 2. ОПТИМИЗИРОВАННЫЙ СЛАЙДЕР (Быстрый и плавный)
+// 2. ОПТИМИЗИРОВАННЫЙ СЛАЙДЕР
 // ========================================
 document.addEventListener('DOMContentLoaded', () => {
     const tape = document.getElementById('sliderTape');
     if (!tape) return;
 
-    // Получаем оригинальные слайды (без клонов пока)
-    const originalSlides = Array.from(document.querySelectorAll('.second-section'));
+    // Получаем оригинальные слайды
+    const originalSlides = Array.from(tape.querySelectorAll('.second-section'));
     const totalOriginals = originalSlides.length;
-    
     if (totalOriginals === 0) return;
 
     // Создаем клоны для бесконечной прокрутки
@@ -50,10 +47,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentIndex = 1; // Начинаем с 1, так как 0 - это клон последнего слайда
     let isAnimating = false;
     
-    // ВАЖНО: Ширина слайда теперь берется из CSS, а не вычисляется JS-ом динамически каждый раз.
-    // Это решает проблему тормозов на телефоне.
     function getSlideWidth() {
-        return allSlides[0].getBoundingClientRect().width;
+        // Берем ширину первого РЕАЛЬНОГО слайда (индекс 1), чтобы избежать ошибок округления
+        return allSlides[1].getBoundingClientRect().width;
     }
 
     function updateSlider(animate = true) {
@@ -73,8 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Обработка конца анимации (для бесшовного цикла)
     tape.addEventListener('transitionend', () => {
         isAnimating = false;
-        const width = getSlideWidth();
-        
         // Если уехали на клон первого слайда -> прыгаем на реальный первый
         if (currentIndex === totalOriginals + 1) {
             currentIndex = 1;
@@ -100,18 +94,16 @@ document.addEventListener('DOMContentLoaded', () => {
         updateSlider(true);
     });
 
-    // ========================================
-    // 3. СВАЙПЫ ДЛЯ ТЕЛЕФОНА (Упрощенная логика)
-    // ========================================
+    // Свайпы для телефона
     let startX = 0;
     let currentX = 0;
     let isDragging = false;
 
     tape.addEventListener('touchstart', (e) => {
-        if (isAnimating) return; // Блокируем свайп во время анимации
+        if (isAnimating) return;
         isDragging = true;
         startX = e.touches[0].clientX;
-        tape.style.transition = 'none'; // Отключаем плавность для мгновенной реакции пальца
+        tape.style.transition = 'none';
     }, { passive: true });
 
     tape.addEventListener('touchmove', (e) => {
@@ -119,31 +111,25 @@ document.addEventListener('DOMContentLoaded', () => {
         currentX = e.touches[0].clientX;
         const diff = currentX - startX;
         const width = getSlideWidth();
-        // Двигаем ленту вслед за пальцем
         tape.style.transform = `translateX(${-currentIndex * width + diff}px)`;
     }, { passive: true });
 
     tape.addEventListener('touchend', (e) => {
         if (!isDragging) return;
         isDragging = false;
-        
         const diff = currentX - startX;
-        const threshold = 50; // Минимальное расстояние свайпа в пикселях
+        const threshold = 50; 
         
         if (diff < -threshold) {
-            // Свайп влево -> следующий слайд
             currentIndex++;
         } else if (diff > threshold) {
-            // Свайп вправо -> предыдущий слайд
             currentIndex--;
         }
-        // Если свайп слишком короткий, остаемся на месте (ничего не делаем)
         
-        updateSlider(true); // Возвращаем слайд на место с анимацией
+        updateSlider(true);
     });
 
     // Инициализация при загрузке
-    // Небольшая задержка гарантирует, что CSS стили применились
     setTimeout(() => {
         updateSlider(false);
     }, 100);

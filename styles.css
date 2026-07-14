@@ -7,7 +7,6 @@ html, body {
     width: 100%;
     overflow-x: hidden;
 }
-
 body::before {
     content: "";
     position: fixed;
@@ -19,12 +18,10 @@ body::before {
     z-index: -1;
     pointer-events: none;
 }
-
 ::selection {
     background-color: #2b7d86;
     color: #ffffff;
 }
-
 ::-moz-selection {
     background-color: #2b7d86;
     color: #ffffff;
@@ -39,7 +36,6 @@ body::before {
     padding: 40px 0;
     box-sizing: border-box;
 }
-
 .hero-image {
     position: fixed;
     top: 0;
@@ -51,7 +47,6 @@ body::before {
     margin: 0;
     padding: 0;
 }
-
 .glass-panel {
     position: relative;
     margin: 0 auto;
@@ -68,7 +63,6 @@ body::before {
     flex-direction: column;
     justify-content: flex-start;
 }
-
 .banner-logo {
     text-align: center;
     color: #ffffff;
@@ -77,64 +71,18 @@ body::before {
     font-size: clamp(28px, 3vw, 36px);
     font-weight: 400;
 }
-
 .hero-title {
     font-family: "Playfair Display", serif;
     font-size: 80px;
     font-weight: 700;
     margin: 0 0 5px 0;
 }
-
 .hero-subtitle {
     font-family: "Jost", sans-serif;
     font-size: 30px;
     font-weight: 400;
     opacity: 0.9;
     margin: 0 0 25px 0;
-}
-
-/* ========================================
-КНОПКИ ДЕЙСТВИЯ
-======================================== */
-.cta-buttons {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 60px;
-}
-
-.btn {
-    font-family: "Jost", sans-serif;
-    font-size: 20px;
-    text-decoration: none;
-    padding: 12px 32px;
-    border-radius: 10px;
-    font-weight: 500;
-    transition: background 0.3s ease;
-    white-space: nowrap;
-    min-width: 180px;
-    text-align: center;
-    user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-}
-
-.btn-primary {
-    background-color: #2b7d86;
-    color: #ffffff;
-}
-
-.btn-primary:hover {
-    background-color: #216168;
-}
-
-.btn-secondary {
-    background-color: #f3ece7;
-    color: #000000;
-}
-
-.btn-secondary:hover {
-    background-color: #e5ded9;
 }
 
 /* ========================================
@@ -147,11 +95,9 @@ body::before {
     gap: 40px;
     width: 100%;
 }
-
 .about-content {
     max-width: 70%;
 }
-
 .about-title {
     font-family: "Playfair Display", serif;
     font-size: 42px;
@@ -159,7 +105,6 @@ body::before {
     margin: 0 0 15px 0;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
-
 .about-text {
     font-family: "Jost", sans-serif;
     font-size: 20px;
@@ -169,11 +114,9 @@ body::before {
     color: #ffffff;
     text-shadow: 0 2px 5px rgba(0, 0, 0, 0.6);
 }
-
 .about-image-box {
     flex-shrink: 0;
 }
-
 .about-avatar {
     width: 200px;
     height: 200px;
@@ -200,7 +143,7 @@ body::before {
 }
 
 /* ========================================
-СЛАЙДЕР
+СЛАЙДЕР (ИСПРАВЛЕНО И ОЧИЩЕНО)
 ======================================== */
 .slider-window {
     position: relative;
@@ -213,17 +156,15 @@ body::before {
     background-color: #ffffff;
 }
 
-.slider-tape,
-#sliderTape {
+.slider-tape {
     display: flex;
-    transition: transform 0.5s ease-in-out;
-    width: max-content;
     will-change: transform;
+    /* transition управляется через JS для плавности и мгновенных прыжков */
 }
 
 .second-section {
     flex-shrink: 0;
-    width: 380px;
+    width: 380px; /* Строго фиксированная ширина, как у .slider-window */
     height: 480px;
     background-color: #fdfdfd;
     display: flex;
@@ -231,30 +172,25 @@ body::before {
     justify-content: flex-end;
     position: relative;
     overflow: hidden;
-    background-position: center 25%;
-    background-repeat: no-repeat;
-    background-size: 50%;
-    transition: background-size 0.4s ease-in-out;
+    box-sizing: border-box;
 }
 
-.second-section:hover::before {
-    transform: scale(1.1);
-}
-
-.second-section img {
-    max-width: 100%;
-    height: auto;
+/* Изображение внутри слайда */
+.second-section img.card-image {
     display: block;
+    width: 100%;
+    height: 390px; /* 480px общая высота - 90px высота блока с текстом */
+    object-fit: contain; /* Сохраняет пропорции, inline стили (max-width) будут работать поверх */
+    background-color: #fdfdfd;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
-/* ========================================
-ИНФОРМАЦИОННАЯ ПЛАШКА СЛАЙДА
-======================================== */
 .card-info {
     padding: 24px;
     background-color: #ffffff;
     border-top: 1px solid #eeeeee;
-    min-height: 90px;
+    height: 90px; /* Фиксированная высота для стабильности */
     box-sizing: border-box;
     display: flex;
     justify-content: space-between;
@@ -281,9 +217,6 @@ body::before {
     margin: 0;
 }
 
-/* ========================================
-КНОПКИ УПРАВЛЕНИЯ СЛАЙДЕРОМ
-======================================== */
 .slider-controls {
     position: absolute;
     bottom: 24px;
@@ -324,7 +257,6 @@ body::before {
     font-family: "Jost", sans-serif;
     color: #ffffff;
 }
-
 .contact-title {
     font-family: "Playfair Display", serif;
     font-size: 60px;
@@ -334,7 +266,6 @@ body::before {
     color: #ffffff;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
 }
-
 .contact-subtitle {
     font-size: 20px;
     font-weight: 400;
@@ -344,13 +275,11 @@ body::before {
     opacity: 0.95;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
-
 .contact-list {
     display: flex;
     flex-direction: column;
     gap: 25px;
 }
-
 .contact-item {
     display: flex;
     align-items: center;
@@ -362,7 +291,6 @@ body::before {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
     width: fit-content;
 }
-
 .contact-svg-icon {
     width: 24px;
     height: 24px;
@@ -371,21 +299,17 @@ body::before {
     flex-shrink: 0;
     transition: stroke 0.3s ease;
 }
-
 .contact-item:hover {
     color: #2b7d86;
 }
-
 .contact-item:hover .contact-svg-icon {
     stroke: #2b7d86;
 }
-
 .contact-link-text {
     font-family: "Jost", sans-serif;
     font-size: 25px;
     line-height: 1;
 }
-
 .contact-phone-btn {
     background: none;
     border: none;
@@ -394,35 +318,11 @@ body::before {
     font-family: inherit;
     width: fit-content;
 }
-
 .contact-item-wrapper {
     position: relative;
     width: fit-content;
     display: flex;
     align-items: center;
-}
-
-.contact-toast {
-    position: absolute;
-    left: 102%;
-    top: 50%;
-    bottom: auto;
-    transform: translateY(-50%) translateX(10px);
-    background-color: #2b7d86;
-    color: #ffffff;
-    font-size: 18px;
-    padding: 10px 20px;
-    border-radius: 10px;
-    white-space: nowrap;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
-}
-
-.contact-toast.show {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(-50%) translateX(15px);
 }
 
 /* ========================================
@@ -437,17 +337,14 @@ body::before {
     font-family: "Jost", sans-serif;
     box-sizing: border-box;
 }
-
 .footer-brand {
     font-family: "Playfair Display", serif;
     font-size: 20px;
     margin: 0;
 }
-
 .footer-phone-box {
     position: relative;
 }
-
 .footer-phone {
     background: none;
     border: none;
@@ -460,16 +357,13 @@ body::before {
     transition: opacity 0.3s ease;
     user-select: none;
 }
-
 .footer-phone:hover {
     opacity: 0.8;
 }
 
-.copy-toast {
+/* Уведомления о копировании */
+.copy-toast, .contact-toast {
     position: absolute;
-    bottom: 140%;
-    left: 50%;
-    transform: translateX(-50%);
     background-color: #2b7d86;
     color: #ffffff;
     font-size: 18px;
@@ -478,348 +372,25 @@ body::before {
     white-space: nowrap;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+    z-index: 1000;
+    pointer-events: none;
 }
-
+.copy-toast {
+    bottom: 140%;
+    left: 50%;
+    transform: translateX(-50%);
+}
 .copy-toast.show {
     opacity: 1;
     visibility: visible;
     transform: translateX(-50%) translateY(-5px);
 }
-
-/* ========================================
-АДАПТИВНОСТЬ — ПЛАНШЕТЫ (до 1300px)
-======================================== */
-@media (max-width: 1300px) {
-    .contact-block {
-        margin-left: 20px;
-    }
-}
-
-/* ========================================
-АДАПТИВНОСТЬ — ПЛАНШЕТЫ (до 1200px)
-======================================== */
-@media (max-width: 1200px) {
-    .main-content-row {
-        gap: 40px;
-    }
-    
-    .contact-block {
-        width: 400px;
-    }
-}
-
-/* ========================================
-АДАПТИВНОСТЬ — ПЛАНШЕТЫ (до 1024px)
-======================================== */
-@media (max-width: 1024px) {
-    .contact-block {
-        margin-left: 0px;
-    }
-
-    .glass-panel {
-        padding: 40px;
-    }
-
-    .hero-title {
-        font-size: 60px;
-    }
-
-    .hero-subtitle {
-        font-size: 24px;
-    }
-
-    .about-title {
-        font-size: 36px;
-    }
-
-    .about-text {
-        font-size: 18px;
-    }
-
-    .about-avatar {
-        width: 160px;
-        height: 160px;
-    }
-
-    .main-content-row {
-        flex-direction: column;
-        gap: 40px;
-    }
-
-    .contact-block {
-        width: 100%;
-    }
-
-    .contact-title {
-        font-size: 48px;
-    }
-
-    .contact-subtitle {
-        font-size: 18px;
-    }
-
-    .contact-link-text {
-        font-size: 20px;
-    }
-}
-
-/* ========================================
-АДАПТИВНОСТЬ — МОБИЛЬНЫЕ (до 768px)
-======================================== */
-@media (max-width: 768px) {
-    .glass-panel {
-        padding: 30px 20px;
-        width: 95%;
-    }
-
-    .banner-logo {
-        font-size: 24px;
-        margin-bottom: 30px;
-    }
-
-    .hero-title {
-        font-size: 42px;
-    }
-
-    .hero-subtitle {
-        font-size: 20px;
-        margin-bottom: 20px;
-    }
-
-    .about-section {
-        flex-direction: column;
-        gap: 30px;
-        align-items: center;
-    }
-
-    .about-image-box {
-        order: 1;
-    }
-
-    .about-content {
-        order: 2;
-        max-width: 100%;
-        text-align: center;
-    }
-
-    .about-title {
-        font-size: 32px;
-    }
-
-    .about-text {
-        font-size: 16px;
-    }
-
-    .about-avatar {
-        width: 140px;
-        height: 140px;
-    }
-
-    .main-content-row {
-        margin-top: 40px;
-        padding-top: 40px;
-    }
-
-    .slider-window {
-        width: 100%;
-        max-width: 340px;
-        margin: 0 auto;
-    }
-
-    .second-section {
-        width: 340px;
-        height: 420px;
-    }
-
-    .card-title {
-        font-size: 18px;
-    }
-
-    .card-subtitle {
-        font-size: 14px;
-    }
-
-    .slider-controls {
-        bottom: 16px;
-        right: 16px;
-    }
-
-    .slider-btn {
-        width: 32px;
-        height: 32px;
-        font-size: 14px;
-    }
-
-    .contact-title {
-        font-size: 36px;
-        text-align: center;
-    }
-
-    .contact-subtitle {
-        font-size: 16px;
-        text-align: center;
-        margin-bottom: 30px;
-    }
-
-    .contact-list {
-        gap: 20px;
-        align-items: center;
-    }
-
-    .contact-item-wrapper {
-        width: 100%;
-        justify-content: center;
-    }
-
-    .contact-item {
-        font-size: 18px;
-    }
-
-    .contact-link-text {
-        font-size: 18px;
-    }
-
-    .contact-toast {
-        left: 50%;
-        top: auto;
-        bottom: -50px;
-        transform: translateX(-50%);
-    }
-
-    .contact-toast.show {
-        transform: translateX(-50%) translateY(-5px);
-    }
-
-    .main-footer {
-        flex-direction: column;
-        gap: 20px;
-        padding: 20px;
-        text-align: center;
-    }
-
-    .footer-brand {
-        font-size: 18px;
-    }
-
-    .footer-phone {
-        font-size: 14px;
-    }
-
-    .banner-logo,
-    .hero-title,
-    .hero-subtitle {
-        text-align: center;
-    }
-}
-
-/* ========================================
-АДАПТИВНОСТЬ — МАЛЕНЬКИЕ МОБИЛЬНЫЕ (до 480px)
-======================================== */
-@media (max-width: 480px) {
-    .glass-panel {
-        padding: 25px 15px;
-    }
-
-    .hero-title {
-        font-size: 32px;
-    }
-
-    .hero-subtitle {
-        font-size: 18px;
-    }
-
-    .about-title {
-        font-size: 28px;
-    }
-
-    .about-text {
-        font-size: 15px;
-    }
-
-    .about-avatar {
-        width: 120px;
-        height: 120px;
-    }
-
-    .card-info {
-        padding: 16px;
-        min-height: 80px;
-    }
-
-    .card-title {
-        font-size: 16px;
-    }
-
-    .card-subtitle {
-        font-size: 13px;
-    }
-
-    .slider-controls {
-        bottom: 16px;
-        right: 16px;
-    }
-
-    .slider-btn {
-        width: 32px;
-        height: 32px;
-        font-size: 14px;
-    }
-
-    .contact-title {
-        font-size: 28px;
-    }
-
-    .contact-subtitle {
-        font-size: 15px;
-    }
-
-    .contact-link-text {
-        font-size: 16px;
-    }
-
-    .contact-svg-icon {
-        width: 20px;
-        height: 20px;
-        margin-right: 10px;
-    }
-}
-
-/* ========================================
-ИСПРАВЛЕНИЕ УВЕДОМЛЕНИЯ О КОПИРОВАНИИ
-======================================== */
-
-/* Родительский контейнер — разрешаем выход за границы */
-.contact-item-wrapper {
-    position: relative;
-    width: fit-content;
-    display: flex;
-    align-items: center;
-    overflow: visible; /* ВАЖНО: разрешаем уведомлению выходить за границы */
-}
-
-/* Уведомление — увеличиваем padding и z-index */
 .contact-toast {
-    position: absolute;
     left: 102%;
     top: 50%;
-    bottom: auto;
     transform: translateY(-50%) translateX(10px);
-    background-color: #2b7d86;
-    color: #ffffff;
-    font-size: 18px;
-    font-weight: 500;
-    padding: 12px 24px; /* Увеличили padding */
-    border-radius: 10px;
-    white-space: nowrap;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
-    z-index: 1000; /* Высокий z-index чтобы быть поверх всего */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Добавили тень для лучшей видимости */
-    pointer-events: none; /* Чтобы уведомление не мешало кликам */
 }
-
 .contact-toast.show {
     opacity: 1;
     visibility: visible;
@@ -827,96 +398,93 @@ body::before {
 }
 
 /* ========================================
-МОБИЛЬНАЯ ВЕРСИЯ — уведомление по центру снизу
+АДАПТИВНОСТЬ
 ======================================== */
+@media (max-width: 1300px) {
+    .contact-block { margin-left: 20px; }
+}
+@media (max-width: 1200px) {
+    .main-content-row { gap: 40px; }
+    .contact-block { width: 400px; }
+}
+@media (max-width: 1024px) {
+    .contact-block { margin-left: 0px; }
+    .glass-panel { padding: 40px; }
+    .hero-title { font-size: 60px; }
+    .hero-subtitle { font-size: 24px; }
+    .about-title { font-size: 36px; }
+    .about-text { font-size: 18px; }
+    .about-avatar { width: 160px; height: 160px; }
+    .main-content-row { flex-direction: column; gap: 40px; }
+    .contact-block { width: 100%; }
+    .contact-title { font-size: 48px; }
+    .contact-subtitle { font-size: 18px; }
+    .contact-link-text { font-size: 20px; }
+}
 @media (max-width: 768px) {
+    .glass-panel { padding: 30px 20px; width: 95%; }
+    .banner-logo { font-size: 24px; margin-bottom: 30px; }
+    .hero-title { font-size: 42px; }
+    .hero-subtitle { font-size: 20px; margin-bottom: 20px; }
+    .about-section { flex-direction: column; gap: 30px; align-items: center; }
+    .about-image-box { order: 1; }
+    .about-content { order: 2; max-width: 100%; text-align: center; }
+    .about-title { font-size: 32px; }
+    .about-text { font-size: 16px; }
+    .about-avatar { width: 140px; height: 140px; }
+    .main-content-row { margin-top: 40px; padding-top: 40px; }
+    
+    /* Адаптация слайдера для мобильных */
+    .slider-window {
+        width: 100%;
+        max-width: 340px;
+        margin: 0 auto;
+    }
+    .second-section {
+        width: 340px; /* Строго совпадает с max-width родителя */
+        height: 420px;
+    }
+    .second-section img.card-image {
+        height: 330px; /* 420px - 90px */
+    }
+    .card-title { font-size: 18px; }
+    .card-subtitle { font-size: 14px; }
+    .slider-controls { bottom: 16px; right: 16px; }
+    .slider-btn { width: 32px; height: 32px; font-size: 14px; }
+    
+    .contact-title { font-size: 36px; text-align: center; }
+    .contact-subtitle { font-size: 16px; text-align: center; margin-bottom: 30px; }
+    .contact-list { gap: 20px; align-items: center; }
+    .contact-item-wrapper { width: 100%; justify-content: center; }
+    .contact-item { font-size: 18px; }
+    .contact-link-text { font-size: 18px; }
     .contact-toast {
         left: 50%;
         top: auto;
-        bottom: -60px; /* Чуть дальше от номера */
+        bottom: -60px;
         transform: translateX(-50%);
-        font-size: 16px;
-        padding: 10px 20px;
-        white-space: nowrap;
     }
-
     .contact-toast.show {
         transform: translateX(-50%) translateY(-5px);
     }
+    .main-footer { flex-direction: column; gap: 20px; padding: 20px; text-align: center; }
+    .footer-brand { font-size: 18px; }
+    .footer-phone { font-size: 14px; }
+    .banner-logo, .hero-title, .hero-subtitle { text-align: center; }
 }
-
-/* ========================================
-МАЛЕНЬКИЕ МОБИЛЬНЫЕ — ещё меньше
-======================================== */
 @media (max-width: 480px) {
-    .contact-toast {
-        font-size: 14px;
-        padding: 8px 16px;
-        bottom: -50px;
-    }
-}
-
-
-/* Стили для изображений внутри слайдера */
-.second-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start; /* Картинка сверху, текст снизу */
-    width: 100%;
-    height: 100%;
-    padding: 10px;
-    box-sizing: border-box;
-}
-
-.card-image {
-    display: block;
-    height: auto;
-    object-fit: contain; /* Сохраняет пропорции картинки, не обрезая её */
-    margin-bottom: 15px; /* Отступ до текста */
-}
-
-/* Адаптивность для мобильных устройств */
-@media (max-width: 768px) {
-    .card-image {
-        max-width: 80% !important; /* На телефонах картинки чуть крупнее */
-    }
-}
-
-
-/* Контейнер слайдера */
-.slider-window {
-    overflow: hidden; /* Скрываем всё, что вылезает за рамки */
-    width: 100%;
-    position: relative;
-}
-
-/* Лента со слайдами */
-.slider-tape {
-    display: flex; /* Выстраиваем слайды в ряд */
-    will-change: transform; /* Подсказка браузеру для оптимизации анимации */
-}
-
-/* Сам слайд */
-.second-section {
-    /* ВАЖНО: Фиксируем ширину слайда. 
-       100% означает, что один слайд занимает всю ширину окна просмотра.
-       Если хотите видеть часть следующего слайда, поставьте например 85% или 300px */
-    min-width: 100%; 
-    box-sizing: border-box;
-    flex-shrink: 0; /* Запрещаем сжатие слайдов */
-    
-    /* Центрирование контента внутри слайда */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-}
-
-/* Картинки внутри слайда */
-.card-image {
-    max-width: 100%;
-    height: auto;
-    display: block;
+    .glass-panel { padding: 25px 15px; }
+    .hero-title { font-size: 32px; }
+    .hero-subtitle { font-size: 18px; }
+    .about-title { font-size: 28px; }
+    .about-text { font-size: 15px; }
+    .about-avatar { width: 120px; height: 120px; }
+    .card-info { padding: 16px; min-height: 80px; }
+    .card-title { font-size: 16px; }
+    .card-subtitle { font-size: 13px; }
+    .contact-title { font-size: 28px; }
+    .contact-subtitle { font-size: 15px; }
+    .contact-link-text { font-size: 16px; }
+    .contact-svg-icon { width: 20px; height: 20px; margin-right: 10px; }
+    .contact-toast { font-size: 14px; padding: 8px 16px; bottom: -50px; }
 }
